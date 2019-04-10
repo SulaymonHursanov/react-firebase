@@ -4,17 +4,14 @@ import SignOut from '../SignOut'
 
 import * as ROUTES from '../constants/routes'
 import { AuthUserContext, withAuthentication } from "../Session";
+import * as ROLES from '../constants/roles';
+import {connect} from "react-redux";
 
-
-const Navigation = (props)=> {
-    return (
-        <AuthUserContext.Consumer >
-            {authUser=> authUser ? <NavigationAuth/> : <NavigationNonAuth/>}
-        </AuthUserContext.Consumer>
-    );
+const Navigation = ({authUser})=> {
+    return (authUser ? <NavigationAuth authUser={authUser}/> : <NavigationNonAuth/>);
 };
 
-const NavigationAuth = ()=> {
+const NavigationAuth = ({authUser})=> {
     return (
             <ul>
                 <li>
@@ -23,9 +20,11 @@ const NavigationAuth = ()=> {
                 <li>
                     <Link to={ROUTES.ACCOUNT}>Account</Link>
                 </li>
-                <li>
-                    <Link to={ROUTES.ADMIN}>Admin</Link>
-                </li>
+                {!!authUser.roles[ROLES.ADMIN] && (
+                    <li>
+                        <Link to={ROUTES.ADMIN}>Admin</Link>
+                    </li>
+                )}
                 <li>
                     <SignOut/>
                 </li>
@@ -49,6 +48,8 @@ const NavigationNonAuth = (props) => {
           </ul>
     );
 };
+const mapStateToProps = state => ({
+    authUser: state.sessionState.authUser,
+});
 
-
-export default Navigation;
+export default connect(mapStateToProps)(Navigation);

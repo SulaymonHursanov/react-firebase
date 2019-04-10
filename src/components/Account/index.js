@@ -1,8 +1,9 @@
 import React from 'react';
 import  {AuthUserContext, withAuthorization} from "../Session";
+import {connect} from "react-redux";
+import {compose} from "redux";
 
-const Account = ()=> {
-    return (
+const Account = ({ authUser }) => (
         <AuthUserContext.Consumer>
             {authUser=> (
                 <div>
@@ -12,9 +13,14 @@ const Account = ()=> {
                 </div>
             )}
         </AuthUserContext.Consumer>
-    );
-};
+);
 
+const mapStateToProps = state => ({
+    authUser: state.sessionState.authUser,
+});
 const condition = authUser => !!authUser;
 
-export default withAuthorization(condition)(Account);
+export default compose(
+    connect(mapStateToProps),
+    withAuthorization(condition),
+)(Account);

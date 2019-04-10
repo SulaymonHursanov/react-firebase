@@ -4,6 +4,7 @@ import { withFirebase} from './../Firebase'
 import { compose } from "recompose";
 
 import * as ROUTES from '../constants/routes';
+import * as ROLES from '../constants/roles';
 
 const SignUpPage = ()=> (
     <div>
@@ -17,6 +18,7 @@ const INITIAL_STATE = {
     email: '',
     passwordOne: '',
     passwordTwo: '',
+    isAdmin: false,
     error: null,
 };
 
@@ -27,8 +29,23 @@ class SignUpFormBase extends React.Component{
         this.state = {...INITIAL_STATE};
     }
 
+    onChangeCheckbox = event => {
+        this.setState({[event.target.name]: event.target.value})
+    };
+
     onSubmit = event => {
-        const { username, email, passwordOne } = this.state;
+        const {
+            username,
+            email,
+            passwordOne,
+            isAdmin,
+        } = this.state;
+
+        const roles = {};
+        
+        if (isAdmin){
+            roles[ROLES.ADMIN] = ROLES.ADMIN;
+        }
 
         this.props.firebase
             .doCreateUserWithEmailAndPassword(email, passwordOne)
@@ -40,7 +57,8 @@ class SignUpFormBase extends React.Component{
                     .user(authUser.user.uid)
                     .set({
                         username,
-                        email
+                        email,
+                        roles,
                     });
             })
             .catch(error => {
@@ -61,6 +79,7 @@ class SignUpFormBase extends React.Component{
             email,
             passwordOne,
             passwordTwo,
+            isAdmin,
             error
         } = this.state;
 
@@ -95,6 +114,15 @@ class SignUpFormBase extends React.Component{
                        type={'password'}
                        placeholder="Confirm password"
                 />
+                <label>
+                    Admin:
+                    <input
+                        name="isAdmin"
+                        type="checkbox"
+                        checked={isAdmin}
+                        onChange={this.onChangeCheckbox}
+                    />
+                </label>
                 <button disabled={isInvalid} type={'submit'}>Sign up</button>
                 {error && <p>{error.message}</p>}
             </form>
