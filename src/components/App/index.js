@@ -1,34 +1,38 @@
 import React from 'react';
 import {BrowserRouter, Route} from "react-router-dom";
-import Navgivation from '../Navigation'
+import Navigation from '../Navigation'
 
-// import LandingPage from '../Landing';
+import LandingPage from '../Landing';
 import SignUpPage from '../SignUp';
-// import SignInPage from '../SignIn';
+import SignInPage from '../SignIn';
 // import PasswordForgetPage from '../PasswordForget';
-// import HomePage from '../Home';
-// import AccountPage from '../Account';
-// import AdminPage from '../Admin';
+import HomePage from '../Home';
+import AccountPage from '../Account';
+import AdminPage from '../Admin';
 
 import * as ROUTES from '../constants/routes';
+import { withAuthentication } from "../Session";
 
-const App = () => (
-    <div>
-        <BrowserRouter >
-            <div>
-                <Navgivation />
-                <hr/>
 
-                {/*<Route exact path={ROUTES.LANDING} component={LandingPage}/>*/}
-                <Route exact path={ROUTES.SIGN_UP} component={SignUpPage}/>
-                {/*<Route exact path={ROUTES.SIGN_IN} component={SignInPage}/>*/}
-                {/*<Route exact path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage}/>*/}
-                {/*<Route exact path={ROUTES.HOME} component={HomePage}/>*/}
-                {/*<Route exact path={ROUTES.ACCOUNT} component={AccountPage}/>*/}
-                {/*<Route exact path={ROUTES.ADMIN} component={AdminPage}/>*/}
-            </div>
-        </BrowserRouter>
-    </div>
-);
+const App = ()=>  {
+    return (
+        <div>
+            <BrowserRouter >
+                <div>
+                    <Navigation />
+                    <hr/>
 
-export default App;
+                    <Route exact path={ROUTES.ROOT} component={LandingPage}/>
+                    <Route exact path={ROUTES.SIGN_UP} component={SignUpPage}/>
+                    <Route exact path={ROUTES.SIGN_IN} component={SignInPage}/>
+                    {/*<Route exact path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage}/>*/}
+                    <Route exact path={ROUTES.HOME} component={HomePage}/>
+                    <Route exact path={ROUTES.ACCOUNT} component={AccountPage}/>
+                    <Route exact path={ROUTES.ADMIN} component={AdminPage}/>
+                </div>
+            </BrowserRouter>
+        </div>
+    );
+};
+
+export default withAuthentication(App);
